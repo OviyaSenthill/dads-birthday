@@ -132,6 +132,7 @@ color:var(--ink);min-height:100vh;overflow-x:hidden}
 .clue-wrap.revealed .clue-letter{display:inline-flex}
 #s4 .photo-grid{grid-template-columns:repeat(3,1fr)}
 #s4 .photo-grid .photo-frame{aspect-ratio:3/4}
+#s3 #img3a,#s3 #img3b{transform:rotate(180deg)}
 
 .map-wrap{position:relative;max-width:480px;margin:0 auto;padding-bottom:1.5rem;z-index:2}
 .map-svg-bg{width:100%;border-radius:8px;filter:drop-shadow(2px 3px 6px rgba(0,0,0,.2))}
@@ -454,7 +455,7 @@ I used to roll my eyes at it. Now I’m starting to understand, this mirror isn�
         </div>
         <input type="file" accept="image/*" onchange="swapPhoto(event,'img3a','ov3a')">
       </div>
-      <div class="photo-caption" contenteditable="true">upside down & happy 🌲</div>
+      <div class="photo-caption" contenteditable="true">happy on the trail 🌲</div>
     </div>
     <div>
       <div class="photo-frame" id="frame3b">
@@ -464,7 +465,7 @@ I used to roll my eyes at it. Now I’m starting to understand, this mirror isn�
         </div>
         <input type="file" accept="image/*" onchange="swapPhoto(event,'img3b','ov3b')">
       </div>
-      <div class="photo-caption" contenteditable="true">worth every step 🗻</div>
+      <div class="photo-caption" contenteditable="true">worth every step together 🗻</div>
     </div>
   </div>
 
@@ -762,28 +763,23 @@ function loadCustomizations(){
 }
 
 function applyEditLockState(){
-  document.querySelectorAll('textarea.card-txt, .finale-msg').forEach(el=>{ el.readOnly = isEditingLocked; });
-  document.querySelectorAll('.photo-caption, .finale-sig').forEach(el=>{ el.contentEditable = isEditingLocked ? 'false' : 'true'; });
-  document.querySelectorAll('.photo-frame input[type=file]').forEach(input=>{ input.disabled = isEditingLocked; });
+  // Nodes are intentionally locked to keep final content fixed.
+  document.querySelectorAll('textarea.card-txt').forEach(el=>{ el.readOnly = true; });
+  document.querySelectorAll('.photo-caption').forEach(el=>{ el.contentEditable = 'false'; });
+  document.querySelectorAll('.photo-frame input[type=file]').forEach(input=>{ input.disabled = true; });
+  document.querySelectorAll('.upload-overlay').forEach(ov=>{ ov.style.display='none'; });
 
-  if(isEditingLocked){
-    document.querySelectorAll('.upload-overlay').forEach(ov=>{ ov.style.display='none'; });
-  }
+  // Finale can still be editable if desired.
+  document.querySelectorAll('.finale-msg').forEach(el=>{ el.readOnly = false; });
+  document.querySelectorAll('.finale-sig').forEach(el=>{ el.contentEditable = 'true'; });
 }
 
 function saveAndLockEdits(){
-  saveCustomizations();
-  isEditingLocked = true;
-  localStorage.setItem(EDIT_LOCK_KEY, '1');
-  applyEditLockState();
-  showToast('Edits saved and locked ✦');
+  showToast('Node editing is locked in this version ✦');
 }
 
 function unlockEditing(){
-  isEditingLocked = false;
-  localStorage.setItem(EDIT_LOCK_KEY, '0');
-  applyEditLockState();
-  showToast('Editing unlocked');
+  showToast('Node editing is disabled for this version');
 }
 
 function saveProgress(){
@@ -903,6 +899,8 @@ loadProgress();
 loadCustomizations();
 isEditingLocked = localStorage.getItem(EDIT_LOCK_KEY) === '1';
 applyEditLockState();
+localStorage.removeItem(STORAGE_KEY);
+done = new Set();
 refreshMapState();
 </script>
 </body>
