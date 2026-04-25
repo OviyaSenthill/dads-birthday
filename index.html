@@ -232,6 +232,9 @@ color:var(--ink);min-height:100vh;overflow-x:hidden}
 .finale-msg:focus{background:rgba(184,134,11,.07);border-radius:6px;font-style:normal}
 .finale-sig{font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.1em;color:var(--gold);margin:1rem 0 2rem;outline:none;border:none;background:transparent;text-align:center;width:100%;cursor:text}
 .finale-sig:focus{background:rgba(184,134,11,.07);border-radius:3px}
+.finale-photo-reveal{opacity:0;transform:translateY(24px) scale(.98);transition:opacity .6s ease,transform .6s ease;max-width:560px;margin:1.25rem auto 0;pointer-events:none}
+.finale-photo-reveal.show{opacity:1;transform:translateY(0) scale(1)}
+.finale-photo{width:min(100%,520px);border-radius:14px;border:3px solid var(--gold);box-shadow:0 14px 34px rgba(59,42,13,.2)}
 
 /* confetti canvas */
 #confettiCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
@@ -645,6 +648,9 @@ I love you so much. Happy Birthday. 🎂</textarea>
     <div style="display:flex;align-items:center;gap:10px;margin:.5rem auto;max-width:280px"><div style="flex:1;height:1px;background:var(--gold)"></div><span style="color:var(--gold2)">✦</span><div style="flex:1;height:1px;background:var(--gold)"></div></div>
     <div class="finale-sig" contenteditable="true">With all my love — always ✦</div>
     <button class="btn-map" style="margin-top:1.5rem" onclick="celebrate()">🎉 Celebrate!</button>
+    <div class="finale-photo-reveal" id="finalePhotoReveal">
+      <img class="finale-photo" src="assets/finale-photo.png" alt="Final family photo">
+    </div>
     <footer style="margin-top:2rem">Made with love 💛</footer>
   </div>
 </div>
@@ -867,6 +873,8 @@ document.head.appendChild(st);
 function celebrate(){
   const canvas=document.getElementById('confettiCanvas');
   const ctx=canvas.getContext('2d');
+  const finalPhotoReveal = document.getElementById('finalePhotoReveal');
+  if(finalPhotoReveal) finalPhotoReveal.classList.remove('show');
   canvas.width=window.innerWidth; canvas.height=window.innerHeight;
   const colors=['#D4A017','#9B2335','#2A6B5E','#7F77DD','#D4537E','#EDD99A','#3B2A0D'];
   const words=['happy birthday','I love you'];
@@ -908,6 +916,9 @@ function celebrate(){
     else ctx.clearRect(0,0,canvas.width,canvas.height);
   }
   draw();
+  setTimeout(()=>{
+    if(finalPhotoReveal) finalPhotoReveal.classList.add('show');
+  },4600);
 }
 
 loadProgress();
