@@ -84,6 +84,14 @@ color:var(--ink);min-height:100vh;overflow-x:hidden}
 .map-header{text-align:center;margin-bottom:1.25rem;position:relative;z-index:2}
 .map-header h2{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--ink);margin-bottom:.25rem}
 .map-header p{font-family:'Crimson Pro',serif;font-size:1rem;color:var(--ink2);font-style:italic}
+.clue-reminder{
+  margin:.5rem auto 0;
+  max-width:480px;
+  font-family:'Crimson Pro',serif;
+  font-size:.96rem;
+  color:var(--ink2);
+  font-style:italic;
+}
 .map-header-card{
   max-width:480px;margin:.9rem auto 1rem;padding:.75rem .9rem;
   border:1.5px solid var(--path);border-radius:8px;background:rgba(255,255,255,.38);
@@ -106,6 +114,22 @@ color:var(--ink);min-height:100vh;overflow-x:hidden}
   font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
   color:var(--red);border:1px dashed var(--gold);border-radius:999px;background:rgba(245,235,207,.72)
 }
+.clue-wrap{margin-bottom:.5rem}
+.clue-reveal-btn{
+  font-family:'Cinzel',serif;
+  font-size:.55rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  border:1px dashed var(--gold);
+  border-radius:999px;
+  background:rgba(245,235,207,.72);
+  color:var(--ink2);
+  padding:.28rem .6rem;
+  cursor:pointer;
+}
+.clue-reveal-btn:hover{background:rgba(237,217,154,.8)}
+.clue-letter{display:none}
+.clue-wrap.revealed .clue-letter{display:inline-flex}
 
 .map-wrap{position:relative;max-width:480px;margin:0 auto;padding-bottom:1.5rem;z-index:2}
 .map-svg-bg{width:100%;border-radius:8px;filter:drop-shadow(2px 3px 6px rgba(0,0,0,.2))}
@@ -240,6 +264,7 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
   <div class="map-header">
     <h2>🗺️ The Treasure Map</h2>
     <p>Click each stop in order to unlock the next</p>
+    <div class="clue-reminder">Remember to write down the letters for the final present ✦</div>
     <div class="map-header-card">
       <div class="progress-row">
         <div class="progress-label">Journey Progress</div>
@@ -306,8 +331,13 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
       <div class="pin-circle" id="pincircle4">🌟</div>
       <div class="pin-label">Stop 4<br>Big Moments</div>
     </div>
+    <!-- Stop 5 ~y=540 → 74% -->
+    <div class="stop-pin locked" id="pin5" style="top:74%;left:50%;transform:translateX(-50%)" onclick="openStop(5)">
+      <div class="pin-circle" id="pincircle5">😝</div>
+      <div class="pin-label">Stop 5<br>Silly Favorites</div>
+    </div>
     <!-- Gift ~y=620 → 88% -->
-    <div class="stop-pin gift-pin locked" id="pinGift" style="top:86%;left:50%;transform:translateX(-50%)" onclick="openStop(5)">
+    <div class="stop-pin gift-pin locked" id="pinGift" style="top:86%;left:50%;transform:translateX(-50%)" onclick="openStop(6)">
       <div class="pin-circle" id="pincircleGift">🎁</div>
       <div class="pin-label">Your Gift!</div>
     </div>
@@ -318,7 +348,7 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 <!-- ===== STOP 1 ===== -->
 <div class="screen" id="s1">
 <div class="stop-screen">
-  <div class="stop-header"><span class="stop-num">STOP I OF IV</span></div>
+  <div class="stop-header"><span class="stop-num">STOP I OF V</span></div>
   <div class="stop-title">The Bald & The Beautiful</div>
   <div class="stop-sub">Some people are born iconic. Others just have great genes. 👴</div>
 
@@ -336,7 +366,10 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 
   <div class="map-card">
     <div class="card-lbl">Memory</div>
-    <div class="clue-badge">Clue Letter: B</div>
+    <div class="clue-wrap">
+      <button class="clue-reveal-btn" onclick="toggleClueLetter(this)">Reveal Clue Letter</button>
+      <div class="clue-badge clue-letter">Clue Letter: B</div>
+    </div>
     <textarea class="card-txt" rows="3">I used to think you were just my dad. Now I realize you're also my most embarrassing mirror — same face, same laugh, same hairline. I wouldn't trade any of it.</textarea>
   </div>
   <div class="map-card">
@@ -354,7 +387,7 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 <!-- ===== STOP 2 ===== -->
 <div class="screen" id="s2">
 <div class="stop-screen">
-  <div class="stop-header"><span class="stop-num">STOP II OF IV</span></div>
+  <div class="stop-header"><span class="stop-num">STOP II OF V</span></div>
   <div class="stop-title">World-Class Napper 🏆</div>
   <div class="stop-sub">Certified elite. Gold medalist. Undisputed champion.</div>
 
@@ -383,7 +416,10 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 
   <div class="map-card">
     <div class="card-lbl">Memory</div>
-    <div class="clue-badge">Clue Letter: O</div>
+    <div class="clue-wrap">
+      <button class="clue-reveal-btn" onclick="toggleClueLetter(this)">Reveal Clue Letter</button>
+      <div class="clue-badge clue-letter">Clue Letter: O</div>
+    </div>
     <textarea class="card-txt" rows="3">The bison stuffed animal found its permanent home: on your head, and then in your arms. You pretended to be embarrassed but we all saw the smile. This is peak Papa energy.</textarea>
   </div>
   <div class="map-card">
@@ -401,7 +437,7 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 <!-- ===== STOP 3 ===== -->
 <div class="screen" id="s3">
 <div class="stop-screen">
-  <div class="stop-header"><span class="stop-num">STOP III OF IV</span></div>
+  <div class="stop-header"><span class="stop-num">STOP III OF V</span></div>
   <div class="stop-title">The Adventure Crew 🏔️</div>
   <div class="stop-sub">You said "just a short hike." It was not a short hike.</div>
 
@@ -430,7 +466,10 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 
   <div class="map-card">
     <div class="card-lbl">Memory</div>
-    <div class="clue-badge">Clue Letter: N</div>
+    <div class="clue-wrap">
+      <button class="clue-reveal-btn" onclick="toggleClueLetter(this)">Reveal Clue Letter</button>
+      <div class="clue-badge clue-letter">Clue Letter: N</div>
+    </div>
     <textarea class="card-txt" rows="3">These trips are some of my favorite memories. Not just the views — but the way we always find our way together, even when the trail gets hard. That feels like a metaphor, Papa.</textarea>
   </div>
   <div class="map-card">
@@ -448,7 +487,7 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 <!-- ===== STOP 4 ===== -->
 <div class="screen" id="s4">
 <div class="stop-screen">
-  <div class="stop-header"><span class="stop-num">STOP IV OF IV</span></div>
+  <div class="stop-header"><span class="stop-num">STOP IV OF V</span></div>
   <div class="stop-title">The Best Moments 🌟</div>
   <div class="stop-sub">Dressed up, silly, proud, and everything in between.</div>
 
@@ -507,7 +546,34 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
     </div>
   </div>
 
-  <div class="mini-section-title">My Favorites</div>
+  <div class="map-card">
+    <div class="card-lbl">Dressed-Up Note</div>
+    <div class="clue-wrap">
+      <button class="clue-reveal-btn" onclick="toggleClueLetter(this)">Reveal Clue Letter</button>
+      <div class="clue-badge clue-letter">Clue Letter: D</div>
+    </div>
+    <textarea class="card-txt" rows="3">From graduations to special events, you always show up looking sharp and making everyone feel proud to stand beside you.</textarea>
+  </div>
+  <div class="map-card">
+    <div class="card-lbl">Clue to Next Stop</div>
+    <textarea class="card-txt" rows="2">One last memory stop is waiting — where all our silly favorites live. Collect the final clue letter there before opening your gift.</textarea>
+  </div>
+  <p class="edit-hint">Click any text or photo to edit it</p>
+  <div class="btn-row">
+    <button class="btn-parchment" onclick="go('smap')">← Back to Map</button>
+    <button class="btn-ink btn-red2" onclick="completeStop(4)">Mark Complete &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- ===== STOP 5 ===== -->
+<div class="screen" id="s5">
+<div class="stop-screen">
+  <div class="stop-header"><span class="stop-num">STOP V OF V</span></div>
+  <div class="stop-title">My Favorites 😝</div>
+  <div class="stop-sub">The goofy, chaotic, laugh-until-you-cry moments.</div>
+
+  <div class="mini-section-title">Silly Favorites</div>
   <div class="photo-grid-vertical">
     <div>
       <div class="photo-frame tall" style="max-height:320px" id="frame4f">
@@ -532,23 +598,21 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
   </div>
 
   <div class="map-card">
-    <div class="card-lbl">Dressed-Up Note</div>
-    <div class="clue-badge">Clue Letter: D</div>
-    <textarea class="card-txt" rows="3">From graduations to special events, you always show up looking sharp and making everyone feel proud to stand beside you.</textarea>
-  </div>
-  <div class="map-card">
     <div class="card-lbl">Silly Note</div>
-    <div class="clue-badge">Clue Letter: S</div>
+    <div class="clue-wrap">
+      <button class="clue-reveal-btn" onclick="toggleClueLetter(this)">Reveal Clue Letter</button>
+      <div class="clue-badge clue-letter">Clue Letter: S</div>
+    </div>
     <textarea class="card-txt" rows="3">And then there are our goofy moments — the faces, the chaos, the laughs. That side of you is one of my favorite parts of being your daughter.</textarea>
   </div>
   <div class="map-card">
     <div class="card-lbl">Final Message</div>
-    <textarea class="card-txt" rows="2">Use the 5 clue letters from the journey to unlock your final birthday letter. 🎁</textarea>
+    <textarea class="card-txt" rows="2">Use all 5 clue letters from the journey to unlock your final birthday letter. 🎁</textarea>
   </div>
   <p class="edit-hint">Click any text or photo to edit it</p>
   <div class="btn-row">
     <button class="btn-parchment" onclick="go('smap')">← Back to Map</button>
-    <button class="btn-ink btn-red2" onclick="completeStop(4)">Claim Your Gift! 🎁</button>
+    <button class="btn-ink btn-red2" onclick="completeStop(5)">Claim Your Gift! 🎁</button>
   </div>
 </div>
 </div>
@@ -586,8 +650,8 @@ I love you so much. Happy Birthday. 🎂</textarea>
 <script>
 // State: which stops are done
 let done = new Set();
-const TOTAL_STOPS = 4;
-const ORDER = [1,2,3,4,5]; // 5 = gift
+const TOTAL_STOPS = 5;
+const ORDER = [1,2,3,4,5,6]; // 6 = gift
 const STORAGE_KEY = 'papa-birthday-map-progress-v1';
 const SECRET_WORD = 'BONDS';
 const CUSTOM_KEY = 'papa-birthday-map-custom-v2';
@@ -601,19 +665,19 @@ function go(id){
 }
 
 function openStop(n){
-  // n=1-4 = stops, n=5 = gift
+  // n=1-5 = stops, n=6 = gift
   if(n===1){ go('s1'); return; }
   // check previous complete
   if(!done.has(n-1)){
-    const msgs = ['','','Complete Stop 1 first!','Complete Stop 2 first!','Complete Stop 3 first!','Complete all stops first!'];
+    const msgs = ['','','Complete Stop 1 first!','Complete Stop 2 first!','Complete Stop 3 first!','Complete Stop 4 first!','Complete all stops first!'];
     shakePin(n); showToast(msgs[n]); return;
   }
-  if(n===5){
+  if(n===6){
     const guess = window.prompt('Enter the 5-letter secret word from your clues to open the final letter:');
     if(!guess) return;
     if(guess.trim().toUpperCase()===SECRET_WORD){ go('sfinal'); return; }
     showToast('Not quite! Try the 5 clue letters from the notes ✦');
-    shakePin(5);
+    shakePin(6);
     return;
   }
   go('s'+n);
@@ -628,7 +692,7 @@ function completeStop(n){
 }
 
 function shakePin(n){
-  const id = n<5?'pin'+n:'pinGift';
+  const id = n<=TOTAL_STOPS?'pin'+n:'pinGift';
   const el = document.getElementById(id);
   if(!el)return;
   el.style.animation='shake .4s ease';
@@ -641,6 +705,13 @@ function showToast(msg){
   t.textContent=msg;t.style.opacity='1';
   clearTimeout(window._toastTimer);
   window._toastTimer=setTimeout(()=>t.style.opacity='0',2800);
+}
+
+function toggleClueLetter(btn){
+  const wrap = btn.closest('.clue-wrap');
+  if(!wrap) return;
+  wrap.classList.toggle('revealed');
+  btn.textContent = wrap.classList.contains('revealed') ? 'Hide Clue Letter' : 'Reveal Clue Letter';
 }
 
 function saveCustomizations(){
@@ -758,9 +829,9 @@ function refreshMapState(){
 }
 
 function resumeJourney(){
-  const next = [1,2,3,4].find(n => !done.has(n));
+  const next = [1,2,3,4,5].find(n => !done.has(n));
   if(next){ openStop(next); return; }
-  openStop(5);
+  openStop(6);
 }
 
 function resetProgress(){
