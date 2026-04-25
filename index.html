@@ -38,7 +38,8 @@ color:var(--ink);min-height:100vh;overflow-x:hidden}
   text-align:center;
   overflow:hidden;
 }
-#s0.active{display:flex}
+#s0.active{display:flex;align-items:center;justify-content:center}
+.hero-inner{position:relative;z-index:3;text-align:center;max-width:640px;margin:0 auto}
 .hero-border{
   position:absolute;inset:14px;
   border:2.5px solid var(--gold);
@@ -217,12 +218,12 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
   <svg class="corner-deco bl" viewBox="0 0 44 44" fill="none"><path d="M2 2 L14 2 L14 6 M2 2 L2 14 L6 14" stroke="currentColor" stroke-width="1.5"/><circle cx="2" cy="2" r="1.5" fill="currentColor"/><path d="M20 20 Q28 12 36 20 Q44 28 36 36" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/></svg>
   <svg class="corner-deco br" viewBox="0 0 44 44" fill="none"><path d="M2 2 L14 2 L14 6 M2 2 L2 14 L6 14" stroke="currentColor" stroke-width="1.5"/><circle cx="2" cy="2" r="1.5" fill="currentColor"/><path d="M20 20 Q28 12 36 20 Q44 28 36 36" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/></svg>
 
-  <div style="position:relative;z-index:3;text-align:center">
+  <div class="hero-inner">
     <span class="hero-compass">🧭</span>
-    <div class="hero-tag">A Treasure Hunt &bull; For Papa</div>
-    <h1 class="hero-title">Happy<br><span>Birthday</span></h1>
+    <div class="hero-tag">The Big 52</div>
+    <h1 class="hero-title">Keeping You Sharp<br><span>With A Search</span></h1>
     <div class="hero-divider"><span>✦</span></div>
-    <p class="hero-sub">Follow the map. Collect the memories.<br>Your treasure awaits at the end.</p>
+    <p class="hero-sub">A birthday treasure hunt made just for you.<br>Every stop is a memory, every clue is love.</p>
     <button class="btn-map" onclick="go('smap')">Open The Map &rarr;</button>
   </div>
   <footer style="position:absolute;bottom:28px;left:0;right:0;z-index:3">Made with love 💛</footer>
