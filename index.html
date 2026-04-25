@@ -278,8 +278,6 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
       <div class="map-controls">
         <button class="btn-mini" onclick="resumeJourney()">Resume Next Stop</button>
         <button class="btn-mini" onclick="resetProgress()">Reset Progress</button>
-        <button class="btn-mini" onclick="saveAndLockEdits()">Save & Lock Edits</button>
-        <button class="btn-mini" onclick="unlockEditing()">Unlock Editing</button>
       </div>
     </div>
   </div>
@@ -871,20 +869,37 @@ function celebrate(){
   const ctx=canvas.getContext('2d');
   canvas.width=window.innerWidth; canvas.height=window.innerHeight;
   const colors=['#D4A017','#9B2335','#2A6B5E','#7F77DD','#D4537E','#EDD99A','#3B2A0D'];
+  const words=['happy birthday','I love you'];
   const pieces=Array.from({length:150},()=>({
+    kind:Math.random(),
     x:Math.random()*canvas.width, y:Math.random()*-200,
     r:Math.random()*8+4, c:colors[Math.floor(Math.random()*colors.length)],
     rot:Math.random()*360, speed:Math.random()*3+1.5, spin:Math.random()*5-2.5,
-    shape:Math.random()>.4?'rect':'circle', w:Math.random()*14+6
+    shape:'circle', w:Math.random()*14+6,
+    word:words[Math.floor(Math.random()*words.length)],
+    fontSize:Math.random()*10+12
   }));
+  pieces.forEach(p=>{
+    if(p.kind>.7) p.shape='word';
+    else if(p.kind>.35) p.shape='rect';
+    else p.shape='circle';
+  });
   let frame=0;
   function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     pieces.forEach(p=>{
       ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
       ctx.fillStyle=p.c;
-      if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();}
-      else{ctx.fillRect(-p.w/2,-p.r/2,p.w,p.r);}
+      if(p.shape==='circle'){
+        ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();
+      }else if(p.shape==='rect'){
+        ctx.fillRect(-p.w/2,-p.r/2,p.w,p.r);
+      }else{
+        ctx.font=`${p.fontSize}px "Cinzel", serif`;
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillText(p.word,0,0);
+      }
       ctx.restore();
       p.y+=p.speed; p.rot+=p.spin; p.x+=Math.sin(frame*.03+p.rot)*.5;
     });
