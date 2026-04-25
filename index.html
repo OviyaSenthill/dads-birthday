@@ -100,6 +100,12 @@ color:var(--ink);min-height:100vh;overflow-x:hidden}
   border:1px solid var(--path);background:rgba(245,235,207,.95);color:var(--ink);cursor:pointer
 }
 .btn-mini:hover{background:var(--parchment2)}
+.clue-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:108px;padding:.25rem .55rem;margin-bottom:.45rem;
+  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--red);border:1px dashed var(--gold);border-radius:999px;background:rgba(245,235,207,.72)
+}
 
 .map-wrap{position:relative;max-width:480px;margin:0 auto;padding-bottom:1.5rem;z-index:2}
 .map-svg-bg{width:100%;border-radius:8px;filter:drop-shadow(2px 3px 6px rgba(0,0,0,.2))}
@@ -243,6 +249,8 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
       <div class="map-controls">
         <button class="btn-mini" onclick="resumeJourney()">Resume Next Stop</button>
         <button class="btn-mini" onclick="resetProgress()">Reset Progress</button>
+        <button class="btn-mini" onclick="saveAndLockEdits()">Save & Lock Edits</button>
+        <button class="btn-mini" onclick="unlockEditing()">Unlock Editing</button>
       </div>
     </div>
   </div>
@@ -328,6 +336,7 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 
   <div class="map-card">
     <div class="card-lbl">Memory</div>
+    <div class="clue-badge">Clue Letter: B</div>
     <textarea class="card-txt" rows="3">I used to think you were just my dad. Now I realize you're also my most embarrassing mirror — same face, same laugh, same hairline. I wouldn't trade any of it.</textarea>
   </div>
   <div class="map-card">
@@ -374,6 +383,7 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 
   <div class="map-card">
     <div class="card-lbl">Memory</div>
+    <div class="clue-badge">Clue Letter: O</div>
     <textarea class="card-txt" rows="3">The bison stuffed animal found its permanent home: on your head, and then in your arms. You pretended to be embarrassed but we all saw the smile. This is peak Papa energy.</textarea>
   </div>
   <div class="map-card">
@@ -420,6 +430,7 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
 
   <div class="map-card">
     <div class="card-lbl">Memory</div>
+    <div class="clue-badge">Clue Letter: N</div>
     <textarea class="card-txt" rows="3">These trips are some of my favorite memories. Not just the views — but the way we always find our way together, even when the trail gets hard. That feels like a metaphor, Papa.</textarea>
   </div>
   <div class="map-card">
@@ -521,12 +532,18 @@ footer{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--path);text-a
   </div>
 
   <div class="map-card">
-    <div class="card-lbl">Memory</div>
-    <textarea class="card-txt" rows="3">From graduation days to silly selfies — you've been there for all of it. Every proud moment, every goofy one. You show up, Papa. Every single time.</textarea>
+    <div class="card-lbl">Dressed-Up Note</div>
+    <div class="clue-badge">Clue Letter: D</div>
+    <textarea class="card-txt" rows="3">From graduations to special events, you always show up looking sharp and making everyone feel proud to stand beside you.</textarea>
+  </div>
+  <div class="map-card">
+    <div class="card-lbl">Silly Note</div>
+    <div class="clue-badge">Clue Letter: S</div>
+    <textarea class="card-txt" rows="3">And then there are our goofy moments — the faces, the chaos, the laughs. That side of you is one of my favorite parts of being your daughter.</textarea>
   </div>
   <div class="map-card">
     <div class="card-lbl">Final Message</div>
-    <textarea class="card-txt" rows="2">You've made it to the end of the trail. One last stop is waiting — and it's the best one. 🎁</textarea>
+    <textarea class="card-txt" rows="2">Use the 5 clue letters from the journey to unlock your final birthday letter. 🎁</textarea>
   </div>
   <p class="edit-hint">Click any text or photo to edit it</p>
   <div class="btn-row">
@@ -572,6 +589,10 @@ let done = new Set();
 const TOTAL_STOPS = 4;
 const ORDER = [1,2,3,4,5]; // 5 = gift
 const STORAGE_KEY = 'papa-birthday-map-progress-v1';
+const SECRET_WORD = 'BONDS';
+const CUSTOM_KEY = 'papa-birthday-map-custom-v2';
+const EDIT_LOCK_KEY = 'papa-birthday-map-edit-locked-v1';
+let isEditingLocked = false;
 
 function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -587,7 +608,14 @@ function openStop(n){
     const msgs = ['','','Complete Stop 1 first!','Complete Stop 2 first!','Complete Stop 3 first!','Complete all stops first!'];
     shakePin(n); showToast(msgs[n]); return;
   }
-  if(n===5){ go('sfinal'); return; }
+  if(n===5){
+    const guess = window.prompt('Enter the 5-letter secret word from your clues to open the final letter:');
+    if(!guess) return;
+    if(guess.trim().toUpperCase()===SECRET_WORD){ go('sfinal'); return; }
+    showToast('Not quite! Try the 5 clue letters from the notes ✦');
+    shakePin(5);
+    return;
+  }
   go('s'+n);
 }
 
@@ -613,6 +641,75 @@ function showToast(msg){
   t.textContent=msg;t.style.opacity='1';
   clearTimeout(window._toastTimer);
   window._toastTimer=setTimeout(()=>t.style.opacity='0',2800);
+}
+
+function saveCustomizations(){
+  const payload = { textareas:{}, captions:{}, finales:{}, photos:{} };
+  document.querySelectorAll('textarea.card-txt').forEach((el,idx)=>payload.textareas[idx]=el.value);
+  document.querySelectorAll('.photo-caption').forEach((el,idx)=>payload.captions[idx]=el.innerText);
+
+  const finalMsg = document.querySelector('.finale-msg');
+  const finalSig = document.querySelector('.finale-sig');
+  if(finalMsg) payload.finales.msg = finalMsg.value;
+  if(finalSig) payload.finales.sig = finalSig.innerText;
+
+  document.querySelectorAll('img[id^=\"img\"]').forEach(img=>{ payload.photos[img.id]=img.src; });
+  localStorage.setItem(CUSTOM_KEY, JSON.stringify(payload));
+}
+
+function loadCustomizations(){
+  try{
+    const raw = localStorage.getItem(CUSTOM_KEY);
+    if(!raw) return;
+    const payload = JSON.parse(raw);
+    if(payload.textareas){
+      document.querySelectorAll('textarea.card-txt').forEach((el,idx)=>{
+        if(typeof payload.textareas[idx] === 'string') el.value = payload.textareas[idx];
+      });
+    }
+    if(payload.captions){
+      document.querySelectorAll('.photo-caption').forEach((el,idx)=>{
+        if(typeof payload.captions[idx] === 'string') el.innerText = payload.captions[idx];
+      });
+    }
+    if(payload.finales){
+      const finalMsg = document.querySelector('.finale-msg');
+      const finalSig = document.querySelector('.finale-sig');
+      if(finalMsg && typeof payload.finales.msg === 'string') finalMsg.value = payload.finales.msg;
+      if(finalSig && typeof payload.finales.sig === 'string') finalSig.innerText = payload.finales.sig;
+    }
+    if(payload.photos){
+      Object.keys(payload.photos).forEach(id=>{
+        const img = document.getElementById(id);
+        if(img && typeof payload.photos[id] === 'string') img.src = payload.photos[id];
+      });
+    }
+  }catch(_e){}
+}
+
+function applyEditLockState(){
+  document.querySelectorAll('textarea.card-txt, .finale-msg').forEach(el=>{ el.readOnly = isEditingLocked; });
+  document.querySelectorAll('.photo-caption, .finale-sig').forEach(el=>{ el.contentEditable = isEditingLocked ? 'false' : 'true'; });
+  document.querySelectorAll('.photo-frame input[type=file]').forEach(input=>{ input.disabled = isEditingLocked; });
+
+  if(isEditingLocked){
+    document.querySelectorAll('.upload-overlay').forEach(ov=>{ ov.style.display='none'; });
+  }
+}
+
+function saveAndLockEdits(){
+  saveCustomizations();
+  isEditingLocked = true;
+  localStorage.setItem(EDIT_LOCK_KEY, '1');
+  applyEditLockState();
+  showToast('Edits saved and locked ✦');
+}
+
+function unlockEditing(){
+  isEditingLocked = false;
+  localStorage.setItem(EDIT_LOCK_KEY, '0');
+  applyEditLockState();
+  showToast('Editing unlocked');
 }
 
 function saveProgress(){
@@ -689,7 +786,7 @@ function swapPhoto(event,imgId,ovId){
 document.querySelectorAll('.photo-frame').forEach(frame=>{
   const ov=frame.querySelector('.upload-overlay');
   if(!ov)return;
-  frame.addEventListener('mouseenter',()=>ov.style.display='flex');
+  frame.addEventListener('mouseenter',()=>{ if(!isEditingLocked) ov.style.display='flex'; });
   frame.addEventListener('mouseleave',()=>ov.style.display='none');
 });
 
@@ -729,6 +826,9 @@ function celebrate(){
 }
 
 loadProgress();
+loadCustomizations();
+isEditingLocked = localStorage.getItem(EDIT_LOCK_KEY) === '1';
+applyEditLockState();
 refreshMapState();
 </script>
 </body>
